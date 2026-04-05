@@ -155,11 +155,11 @@ WHERE DAYNAME(v.tanggal_kunjungan) IN ('Monday', 'Saturday')
 GROUP BY hari, p.metode_bayar
 ORDER BY hari;
 
--- kategori yang paling sering pakai BPJS
+-- kategori yang paling sering pakai asuransi
 SELECT v.kategori, COUNT(*) AS jumlah
 FROM hospital_visits v
 JOIN hospital_payments py ON v.visit_id = py.visit_id
-WHERE py.metode_bayar = 'BPJS'
+WHERE py.metode_bayar = 'ASURANSI'
 GROUP BY v.kategori
 ORDER BY jumlah DESC;
 
