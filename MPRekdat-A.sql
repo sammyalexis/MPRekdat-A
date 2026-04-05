@@ -43,8 +43,10 @@ SET keluhan_text = REGEXP_REPLACE(keluhan_text, '[^a-z0-9 -]', '');
 UPDATE hospital_payments
 SET metode_bayar =
 CASE
-    WHEN LOWER(metode_bayar) IN ('cash', 'tunai') THEN 'CASH'
-    WHEN LOWER(metode_bayar) LIKE '%bpjs%' THEN 'BPJS'
+    WHEN LOWER(metode_bayar) IN ('cash', 'tunai')        THEN 'CASH'
+    WHEN LOWER(metode_bayar) LIKE '%bpjs%'               THEN 'BPJS'
+    WHEN LOWER(metode_bayar) LIKE '%asuransi%'
+      OR LOWER(metode_bayar) = 'insurance'               THEN 'ASURANSI'  
     ELSE UPPER(metode_bayar)
 END;
 
