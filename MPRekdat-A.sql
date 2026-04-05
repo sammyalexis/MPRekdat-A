@@ -103,9 +103,6 @@ CASE
          OR keluhan_text LIKE '%menggigil%' 
     THEN 'Infeksi Umum'
 
-    WHEN keluhan_text LIKE '%dada%' 
-    THEN 'Kardiovaskular'
-
     ELSE 'Lainnya'
 END;
 
@@ -133,7 +130,8 @@ ORDER BY jumlah DESC;
 SELECT v.kategori, py.metode_bayar, COUNT(*) AS jumlah
 FROM hospital_visits v
 JOIN hospital_payments py ON v.visit_id = py.visit_id
-GROUP BY v.kategori, py.metode_bayar;
+GROUP BY v.kategori, py.metode_bayar
+order BY v.kategori;
 
 -- dokter dengan pasien terbanyak
 SELECT doctor_name, COUNT(*) AS jumlah_pasien
@@ -141,11 +139,21 @@ FROM hospital_visits
 GROUP BY doctor_name
 ORDER BY jumlah_pasien DESC;
 
--- pola kunjungan per bulan
-SELECT MONTH(tanggal_kunjungan) AS bulan, COUNT(*) AS jumlah
+-- pola kunjungan per hari
+SELECT DAYNAME(tanggal_kunjungan) AS hari, COUNT(*) AS jumlah_kunjungan
 FROM hospital_visits
-GROUP BY bulan
-ORDER BY bulan;
+GROUP BY DAYNAME(tanggal_kunjungan)
+ORDER BY FIELD(hari, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+
+SELECT
+    DAYNAME(v.tanggal_kunjungan) AS hari,
+    p.metode_bayar,
+    COUNT(*) AS jumlah
+FROM hospital_visits v
+JOIN hospital_payments p ON v.visit_id = p.visit_id
+WHERE DAYNAME(v.tanggal_kunjungan) IN ('Monday', 'Saturday')
+GROUP BY hari, p.metode_bayar
+ORDER BY hari;
 
 -- kategori yang paling sering pakai BPJS
 SELECT v.kategori, COUNT(*) AS jumlah
