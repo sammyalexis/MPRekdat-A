@@ -1,5 +1,6 @@
 # MPRekdat-A
-Mini Proyek Mata Kuliah Rekayasa Data
+Mini Proyek A : Basis Data Rumah Sakit 
+Mata Kuliah Rekayasa Data
 
 ## Anggota Kelompok
 1. 6162201029 - Theresia Dewi Ayu Pramesti
@@ -9,4 +10,4 @@ Mini Proyek Mata Kuliah Rekayasa Data
 
 ## Lampiran
 * **Link Prompt AI:** [Klik di sini untuk melihat percakapan AI](URL_LINK_ANDA)
-* **File SQL:** Berisi kueri untuk soal nomor 1-20.
+* **File SQL:** Berisi kueri untuk mini proyek A : basis data rumah sakit.
