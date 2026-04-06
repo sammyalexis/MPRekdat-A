@@ -35,7 +35,11 @@ SET keluhan_text = REPLACE(keluhan_text, 'tibatiba', 'tiba-tiba');
 UPDATE hospital_visits
 SET keluhan_text = REPLACE(keluhan_text, 'flu', 'pilek');
 
--- hapus karakter aneh(tapi tetap simpan "-"
+-- tanda plus (+) → dan
+UPDATE hospital_visits
+SET keluhan_text = REPLACE(keluhan_text, '+', 'dan');
+
+-- hapus karakter aneh(tapi tetap simpan "-")
 UPDATE hospital_visits
 SET keluhan_text = REGEXP_REPLACE(keluhan_text, '[^a-z0-9 -]', '');
 
@@ -63,9 +67,9 @@ END;
 UPDATE hospital_visits
 SET doctor_name =
 CASE
-    WHEN REGEXP_REPLACE(LOWER(REPLACE(doctor_name, '.', '')), '\\s+', ' ') LIKE '%andi%' THEN 'Dr. Andi'
-    WHEN REGEXP_REPLACE(LOWER(REPLACE(doctor_name, '.', '')), '\\s+', ' ') LIKE '%budi%' THEN 'Dr. Budi'
-    WHEN REGEXP_REPLACE(LOWER(REPLACE(doctor_name, '.', '')), '\\s+', ' ') LIKE '%rina%' THEN 'Dr. Rina'
+    WHEN REGEXP_REPLACE(LOWER(REPLACE(doctor_name, '.', '')), '\\s+', ' ') LIKE '%andi%' THEN 'dr. Andi'
+    WHEN REGEXP_REPLACE(LOWER(REPLACE(doctor_name, '.', '')), '\\s+', ' ') LIKE '%budi%' THEN 'dr. Budi'
+    WHEN REGEXP_REPLACE(LOWER(REPLACE(doctor_name, '.', '')), '\\s+', ' ') LIKE '%rina%' THEN 'dr. Rina'
     ELSE doctor_name
 END;
 
@@ -73,35 +77,59 @@ END;
 ALTER TABLE hospital_visits
 ADD kategori VARCHAR(50);
 
--- kategorisasi keluhan
+-- tambah kolom kategori
 UPDATE hospital_visits
 SET kategori =
 CASE
+    -- PRIORITAS TINGGI (lebih spesifik dulu)
+
+    -- Kardiovaskular (nyeri dada harus di atas "nyeri")
+    WHEN keluhan_text LIKE '%nyeri dada%' 
+         OR keluhan_text LIKE '%dada sebelah kiri%' 
+    THEN 'Kardiovaskular'
+
+    -- Pernapasan
     WHEN keluhan_text LIKE '%batuk%' 
          OR keluhan_text LIKE '%pilek%' 
          OR keluhan_text LIKE '%sesak%' 
+         OR keluhan_text LIKE '%napas%' 
     THEN 'Pernapasan'
 
+    -- Pencernaan
     WHEN keluhan_text LIKE '%mual%' 
          OR keluhan_text LIKE '%muntah%' 
          OR keluhan_text LIKE '%diare%' 
          OR keluhan_text LIKE '%perut%' 
+         OR keluhan_text LIKE '%ulu hati%'
     THEN 'Pencernaan'
 
+    -- Neurologis
     WHEN keluhan_text LIKE '%pusing%' 
          OR keluhan_text LIKE '%migrain%' 
          OR keluhan_text LIKE '%kepala%' 
+         OR keluhan_text LIKE '%vertigo%'
+         OR keluhan_text LIKE '%berputar%'
     THEN 'Neurologis'
 
-    WHEN keluhan_text LIKE '%nyeri%' 
-         OR keluhan_text LIKE '%otot%' 
-         OR keluhan_text LIKE '%sendi%' 
+    -- Muskuloskeletal (lebih spesifik, jangan cuma "nyeri")
+    WHEN keluhan_text LIKE '%nyeri otot%' 
+         OR keluhan_text LIKE '%nyeri sendi%' 
+         OR keluhan_text LIKE '%pegal%' 
          OR keluhan_text LIKE '%pinggang%' 
+         OR keluhan_text LIKE '%leher kaku%'
     THEN 'Muskuloskeletal'
 
+    -- Infeksi umum
     WHEN keluhan_text LIKE '%demam%' 
          OR keluhan_text LIKE '%menggigil%' 
+         OR keluhan_text LIKE '%lemas%' 
     THEN 'Infeksi Umum'
+
+    -- THT / lainnya spesifik
+    WHEN keluhan_text LIKE '%telinga%' 
+         OR keluhan_text LIKE '%berdenging%' 
+		 OR keluhan_text LIKE '%tenggorokan%' 
+    THEN 'THT'
 
     ELSE 'Lainnya'
 END;
