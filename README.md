@@ -8,5 +8,5 @@ Mini Proyek A Mata Kuliah Rekayasa Data
 4. 6162201109 - Sammy Alexis
 
 ## Lampiran
-* **Link Prompt AI:** [Klik di sini untuk melihat percakapan AI](URL_LINK_ANDA)
+* **Link Prompt AI:** https://gemini.google.com/app/3cdbe0a8ba108637
 * **File SQL:** Berisi kueri untuk mini proyek A : basis data rumah sakit.
